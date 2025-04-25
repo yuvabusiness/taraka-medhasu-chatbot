@@ -1,0 +1,55 @@
+import os
+from github import Github
+
+# Initialize GitHub API with a token (You need to add your GitHub token here)
+github_token = "your_github_token_here"  # Replace with your GitHub token
+g = Github(github_token)
+
+# Create a repository and upload chatbot files
+repo_name = "taraka-medhasu-chatbot"
+user = g.get_user()
+
+# Create a new repository for the chatbot
+repo = user.create_repo(repo_name)
+
+# Prepare chatbot HTML code for upload
+chatbot_html_code = """
+<!DOCTYPE html>
+<html lang="te">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Taraka Medhasu - Mechanical Quiz Bot</title>
+  <style>
+    body { font-family: sans-serif; background: #f2f6fc; padding: 20px; }
+    #chatbox { background: #fff; padding: 15px; border-radius: 10px; max-width: 700px; margin: auto; box-shadow: 0 0 15px #ccc; }
+    .msg { margin: 10px 0; padding: 8px; border-radius: 5px; }
+    .bot { background: #e1f0ff; }
+    .user { background: #d2ffe4; text-align: right; }
+  </style>
+</head>
+<body>
+  <h1>Taraka Medhasu - Mechanical Quiz Bot</h1>
+  <div id="chatbox"></div>
+  <script>
+    // Chatbot logic goes here
+    let questions = []; // This will be populated by Google Sheets data
+    // Initialize chat with greeting
+    function startChat() {
+      document.getElementById('chatbox').innerHTML = '<div class="msg bot">Hello! Ready for your Mechanical Quiz?</div>';
+    }
+    startChat();
+  </script>
+</body>
+</html>
+"""
+
+# Upload HTML file to GitHub repository
+repo.create_file("index.html", "Initial commit", chatbot_html_code)
+
+# Enable GitHub Pages for the repository
+repo.edit(has_issues=False, has_projects=False, has_wiki=False)
+pages_url = f"https://{user.login}.github.io/{repo_name}/"
+
+# Return the hosted URL
+pages_url
